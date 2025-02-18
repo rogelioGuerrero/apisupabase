@@ -1,4 +1,4 @@
-import { Handler } from '@netlify/functions';
+import { Handler, HandlerEvent, HandlerContext } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
 import dotenv from 'dotenv';
@@ -19,7 +19,10 @@ const ProductoSchema = z.object({
   descripcion: z.string().optional()
 });
 
-export const handler: Handler = async (event, context) => {
+export const handler: Handler = async (
+  event: HandlerEvent, 
+  context: HandlerContext
+) => {
   // Handle different HTTP methods
   switch (event.httpMethod) {
     case 'GET':
@@ -39,7 +42,7 @@ export const handler: Handler = async (event, context) => {
 };
 
 // Get all productos
-async function getProductos(event: any) {
+async function getProductos(event: HandlerEvent) {
   try {
     const { data, error } = await supabase.from('productos').select('*');
     
@@ -49,114 +52,116 @@ async function getProductos(event: any) {
       statusCode: 200,
       body: JSON.stringify(data)
     };
-  } catch (error: any) {
+  } catch (error) {
     return {
       statusCode: 500,
-      body: JSON.stringify({ 
-        message: 'Error al obtener productos', 
-        error: error.message 
-      })
+      body: JSON.stringify({ error: 'Error al obtener productos' })
     };
   }
 }
 
 // Create new producto
-async function createProducto(event: any) {
+async function createProducto(event: HandlerEvent) {
   try {
-    const body = JSON.parse(event.body || '{}');
-    
-    // Validate input
-    const producto = ProductoSchema.parse(body);
-    
+    if (!event.body) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Datos de producto requeridos' })
+      };
+    }
+
+    const productoData = JSON.parse(event.body);
+    const validatedData = ProductoSchema.parse(productoData);
+
     const { data, error } = await supabase
       .from('productos')
-      .insert(producto)
+      .insert(validatedData)
       .select();
-    
+
     if (error) throw error;
-    
+
     return {
       statusCode: 201,
-      body: JSON.stringify(data[0])
+      body: JSON.stringify(data)
     };
-  } catch (error: any) {
+  } catch (error) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ 
-        message: 'Error al crear producto', 
-        error: error.message 
-      })
+      body: JSON.stringify({ error: 'Error al crear producto' })
     };
   }
 }
 
 // Update producto
-async function updateProducto(event: any) {
+async function updateProducto(event: HandlerEvent) {
   try {
-    const body = JSON.parse(event.body || '{}');
-    const { id, ...updateData } = body;
-    
+    if (!event.body) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ error: 'Datos de producto requeridos' })
+      };
+    }
+
+    const productoData = JSON.parse(event.body);
+    const { id, ...updateData } = productoData;
+
     if (!id) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'ID de producto es requerido' })
+        body: JSON.stringify({ error: 'ID de producto requerido' })
       };
     }
-    
+
+    const validatedData = ProductoSchema.partial().parse(updateData);
+
     const { data, error } = await supabase
       .from('productos')
-      .update(updateData)
+      .update(validatedData)
       .eq('id', id)
       .select();
-    
+
     if (error) throw error;
-    
+
     return {
       statusCode: 200,
-      body: JSON.stringify(data[0])
+      body: JSON.stringify(data)
     };
-  } catch (error: any) {
+  } catch (error) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ 
-        message: 'Error al actualizar producto', 
-        error: error.message 
-      })
+      body: JSON.stringify({ error: 'Error al actualizar producto' })
     };
   }
 }
 
 // Delete producto
-async function deleteProducto(event: any) {
+async function deleteProducto(event: HandlerEvent) {
   try {
-    const body = JSON.parse(event.body || '{}');
-    const { id } = body;
-    
+    const id = event.queryStringParameters?.id;
+
     if (!id) {
       return {
         statusCode: 400,
-        body: JSON.stringify({ message: 'ID de producto es requerido' })
+        body: JSON.stringify({ error: 'ID de producto requerido' })
       };
     }
-    
-    const { error } = await supabase
+
+    const { data, error } = await supabase
       .from('productos')
       .delete()
-      .eq('id', id);
-    
+      .eq('id', id)
+      .select();
+
     if (error) throw error;
-    
+
     return {
-      statusCode: 204,
-      body: ''
+      statusCode: 200,
+      body: JSON.stringify(data)
     };
-  } catch (error: any) {
+  } catch (error) {
     return {
       statusCode: 400,
-      body: JSON.stringify({ 
-        message: 'Error al eliminar producto', 
-        error: error.message 
-      })
+      body: JSON.stringify({ error: 'Error al eliminar producto' })
     };
   }
 }
