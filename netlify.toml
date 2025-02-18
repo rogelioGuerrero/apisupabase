@@ -9,3 +9,8 @@
 [functions]
   node_bundler = "esbuild"
   directory = "dist/functions"
+  
+  # Opcional: configuraciones adicionales de funciones
+  included_files = [
+    "dist/functions/**"
+  ]
