@@ -7,6 +7,8 @@
     "clean": "rm -rf dist",
     "build": "npm run clean && tsc && netlify-lambda build src/functions",
     "start": "netlify dev",
+    "local:serve": "netlify dev",
+    "local:build": "netlify build",
     "deploy": "netlify deploy --prod",
     "test": "echo \"No tests specified\" && exit 0"
   },
