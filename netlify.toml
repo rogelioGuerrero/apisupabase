@@ -1,6 +1,11 @@
 [build]
+  command = "pnpm install && pnpm build"
   functions = "dist/functions"
-  publish = "public"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+  PNPM_VERSION = "8"
 
 [functions]
   node_bundler = "esbuild"

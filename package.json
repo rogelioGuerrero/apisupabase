@@ -1,16 +1,16 @@
 {
   "name": "supabase-api",
   "version": "1.0.0",
-  "description": "Supabase API for productos",
+  "description": "Supabase Productos API",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && netlify-lambda build src/functions",
     "start": "netlify dev",
     "deploy": "netlify deploy --prod",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["supabase", "api", "netlify"],
-  "author": "Rogelio Guerrero",
+  "author": "rogelioGuerrero",
   "license": "ISC",
   "dependencies": {
     "@supabase/supabase-js": "^2.39.3",
@@ -21,6 +21,7 @@
     "@netlify/functions": "^2.5.1",
     "@types/node": "^20.11.20",
     "netlify-cli": "^17.10.1",
+    "netlify-lambda": "^2.0.16",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
