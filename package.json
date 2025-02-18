@@ -7,7 +7,9 @@
     "build": "tsc && netlify-lambda build src/functions",
     "start": "netlify dev",
     "deploy": "netlify deploy --prod",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "npm install",
+    "uninstall": "npm uninstall"
   },
   "keywords": ["supabase", "api", "netlify"],
   "author": "rogelioGuerrero",

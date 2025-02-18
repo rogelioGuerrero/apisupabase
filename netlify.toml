@@ -1,11 +1,10 @@
 [build]
-  command = "npm install -g pnpm && pnpm install && pnpm build"
+  command = "npm install && npm run build"
   functions = "dist/functions"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
-  PNPM_VERSION = "8"
 
 [functions]
   node_bundler = "esbuild"
