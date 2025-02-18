@@ -4,10 +4,11 @@
   "description": "Supabase Productos API",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && netlify-lambda build src/functions",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc && netlify-lambda build src/functions",
     "start": "netlify dev",
     "deploy": "netlify deploy --prod",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"No tests specified\" && exit 0"
   },
   "keywords": ["supabase", "api", "netlify"],
   "author": "rogelioGuerrero",
@@ -20,6 +21,8 @@
   "devDependencies": {
     "@netlify/functions": "^2.5.1",
     "@types/node": "^20.11.20",
+    "@types/dotenv": "^8.2.0",
+    "@types/zod": "^3.2.0",
     "netlify-cli": "^17.10.1",
     "netlify-lambda": "^2.0.16",
     "ts-node": "^10.9.2",
