@@ -4,7 +4,7 @@
   "description": "Supabase Productos API",
   "main": "index.js",
   "scripts": {
-    "clean": "rm -rf dist",
+    "clean": "if exist dist rmdir /s /q dist",
     "prebuild": "npm run clean",
     "build": "tsc && netlify-lambda build src/functions",
     "build:verbose": "npm run build --verbose",
